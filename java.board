@@ -1,0 +1,344 @@
+import java.util.List;
+
+public class Board {
+    private int id;
+    private String nome;
+    private List<Coluna> colunas;
+
+    public Board(String nome) {
+        this.nome = nome;
+    }
+
+    // Getters and setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public List<Coluna> getColunas() {
+        return colunas;
+    }
+
+    public void setColunas(List<Coluna> colunas) {
+        this.colunas = colunas;
+    }
+}
+public class Coluna {
+    private int id;
+    private String nome;
+    private String tipo;
+    private int ordem;
+    private Board board;
+
+    public Coluna(String nome, String tipo, int ordem, Board board) {
+        this.nome = nome;
+        this.tipo = tipo;
+        this.ordem = ordem;
+        this.board = board;
+    }
+
+    // Getters and setters
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public int getOrdem() {
+        return ordem;
+    }
+
+    public void setOrdem(int ordem) {
+        this.ordem = ordem;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+}
+public class Coluna {
+    private int id;
+    private String nome;
+    private String tipo;
+    private int ordem;
+    private Board board;
+
+    public Coluna(String nome, String tipo, int ordem, Board board) {
+        this.nome = nome;
+        this.tipo = tipo;
+        this.ordem = ordem;
+        this.board = board;
+    }
+
+    // Getters and setters
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public int getOrdem() {
+        return ordem;
+    }
+
+    public void setOrdem(int ordem) {
+        this.ordem = ordem;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+}
+import java.util.Date;
+
+public class Card {
+    private int id;
+    private String titulo;
+    private String descricao;
+    private Date dataCriacao;
+    private boolean bloqueado;
+    private String motivoBloqueio;
+    private Date dataBloqueio;
+    private Date dataDesbloqueio;
+    private Coluna coluna;
+    private Date dataMovimento;
+
+    public Card(String titulo, String descricao, Coluna coluna) {
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.coluna = coluna;
+        this.dataCriacao = new Date();
+    }
+
+    // Getters and setters
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public boolean isBloqueado() {
+        return bloqueado;
+    }
+
+    public void setBloqueado(boolean bloqueado) {
+        this.bloqueado = bloqueado;
+    }
+
+    public String getMotivoBloqueio() {
+        return motivoBloqueio;
+    }
+
+    public void setMotivoBloqueio(String motivoBloqueio) {
+        this.motivoBloqueio = motivoBloqueio;
+    }
+
+    public Date getDataBloqueio() {
+        return dataBloqueio;
+    }
+
+    public void setDataBloqueio(Date dataBloqueio) {
+        this.dataBloqueio = dataBloqueio;
+    }
+
+    public Date getDataDesbloqueio() {
+        return dataDesbloqueio;
+    }
+
+    public void setDataDesbloqueio(Date dataDesbloqueio) {
+        this.dataDesbloqueio = dataDesbloqueio;
+    }
+
+    public Coluna getColuna() {
+        return coluna;
+    }
+
+    public void setColuna(Coluna coluna) {
+        this.coluna = coluna;
+    }
+
+    public Date getDataMovimento() {
+        return dataMovimento;
+    }
+
+    public void setDataMovimento(Date dataMovimento) {
+        this.dataMovimento = dataMovimento;
+    }
+
+    public Date getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(Date dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+}
+import java.sql.*;
+
+public class Database {
+    private static final String URL = "jdbc:mysql://localhost:3306/board_db";
+    private static final String USER = "root";
+    private static final String PASSWORD = "password";
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
+
+    public static void salvarBoard(Board board) throws SQLException {
+        String query = "INSERT INTO boards (nome) VALUES (?)";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, board.getNome());
+            stmt.executeUpdate();
+        }
+    }
+
+    public static void salvarColuna(Coluna coluna) throws SQLException {
+        String query = "INSERT INTO colunas (nome, tipo, ordem, board_id) VALUES (?, ?, ?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, coluna.getNome());
+            stmt.setString(2, coluna.getTipo());
+            stmt.setInt(3, coluna.getOrdem());
+            stmt.setInt(4, coluna.getBoard().getId());
+            stmt.executeUpdate();
+        }
+    }
+
+    public static void salvarCard(Card card) throws SQLException {
+        String query = "INSERT INTO cards (titulo, descricao, bloqueado, motivo_bloqueio, coluna_id) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, card.getTitulo());
+            stmt.setString(2, card.getDescricao());
+            stmt.setBoolean(3, card.isBloqueado());
+            stmt.setString(4, card.getMotivoBloqueio());
+            stmt.setInt(5, card.getColuna().getId());
+            stmt.executeUpdate();
+        }
+    }
+
+    public static void atualizarCard(Card card) throws SQLException {
+        String query = "UPDATE cards SET bloqueado = ?, motivo_bloqueio = ?, data_bloqueio = ?, data_desbloqueio = ? WHERE id = ?";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setBoolean(1, card.isBloqueado());
+            stmt.setString(2, card.getMotivoBloqueio());
+            stmt.setTimestamp(3, card.getDataBloqueio() != null ? new Timestamp(card.getDataBloqueio().getTime()) : null);
+            stmt.setTimestamp(4, card.getDataDesbloqueio() != null ? new Timestamp(card.getDataDesbloqueio().getTime()) : null);
+            stmt.setInt(5, card.getId());
+            stmt.executeUpdate();
+        }
+    }
+}
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) throws SQLException {
+        Scanner scanner = new Scanner(System.in);
+        int opcao;
+        
+        do {
+            System.out.println("Menu:");
+            System.out.println("1 - Criar novo board");
+            System.out.println("2 - Selecionar board");
+            System.out.println("3 - Excluir boards");
+            System.out.println("4 - Sair");
+            System.out.print("Escolha uma opção: ");
+            opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 1:
+                    criarNovoBoard(scanner);
+                    break;
+                case 2:
+                    // Implementar seleção de board
+                    break;
+                case 3:
+                    excluirBoard(scanner);
+                    break;
+                case 4:
+                    System.out.println("Saindo...");
+                    break;
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        } while (opcao != 4);
+    }
+
+    public static void criarNovoBoard(Scanner scanner) throws SQLException {
+        System.out.print("Digite o nome do novo board: ");
+        String nomeBoard = scanner.next();
+        
+       
+        Board board = new Board(nomeBoard);
+        Database.salvarBoard(board);
+
+       
+        Coluna colunaInicial = new Coluna("A Fazer", "Inicial", 1, board);
+        Coluna colunaFinal = new Coluna("Concluído", "Final", 2, board);
+        Coluna colunaCancelada = new Coluna("Cancelado", "Cancelamento", 3, board);
+
+        
+        Database.salvarColuna(colunaInicial);
+        Database.salvarColuna(colunaFinal);
+        Database.salvarColuna(colunaCancelada);
+
+        System.out.println("Novo board criado com sucesso.");
+    }
+
+    public static void excluirBoard(Scanner scanner) throws SQLException {
+        System.out.print("Digite o ID do board a ser excluído: ");
+        int id = scanner.nextInt();
+        
+        
+        Database.excluirBoard(id);
+        
+        System.out.println("Board excluído com sucesso.");
+    }
+}
